@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_final/src/auth/auth_service.dart';
+import 'package:projeto_final/src/home/home_page.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -142,13 +143,16 @@ class FormItems extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-
                     authService
                         .login(userName.text, password.text)
                         .then((value) {
                       if (value == true) {
                         Navigator.pop(context);
-                        Navigator.pushNamed(context, '/home');
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const HomePage(),
+                            ));
                       }
                       else{
                         showDialog(

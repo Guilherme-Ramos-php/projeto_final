@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 
 class AuthService with ChangeNotifier {
   static const String _authTokenKey = 'auth_token';
-  static const String _idPessoa = 'id_pessoa';
   static const String _apiBasePath = ConstConfigs.apiUrl;
 
   User? _user;
@@ -105,5 +104,5 @@ class AuthService with ChangeNotifier {
 }
 
 class ConstConfigs {
-  static const apiUrl = "http://192.168.1.49:8080";
+  static const apiUrl = "https://4f42-2804-6fb0-7187-6800-15a2-b581-f4a1-90e6.ngrok-free.app";
 }
