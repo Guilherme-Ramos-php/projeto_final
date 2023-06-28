@@ -38,8 +38,8 @@ class AppScaffold extends StatelessWidget {
                     ],
                     gradient: LinearGradient(
                       colors: [
-                        Color.fromARGB(255, 8, 22, 171),
-                        Color.fromARGB(255, 101, 108, 236),
+                        Color.fromARGB(255, 17, 72, 3),
+                        Color.fromARGB(255, 26, 28, 24),
 
                       ],
                       stops: [0, 1],
@@ -77,23 +77,32 @@ class AppScaffold extends StatelessWidget {
             ),
             Align(
                 alignment: const AlignmentDirectional(-0.83, -0.46),
-                child: Text('Seja Bem Vindo ${authService.user?.name ?? ' '}')
+                child: Text('Olá, ${authService.user?.name ?? ' '} ')
             ),
+
             Align(
               alignment: const AlignmentDirectional(-31.11, 0.11),
               child: Container(
                 width: 100,
                 height: 318,
                 decoration: const BoxDecoration(
-
                 ),
               ),
             ),
             Align(
-              alignment: const AlignmentDirectional(0, 1.5),
+              alignment: const AlignmentDirectional(0.5, 2.3),
               child: child
             ),
+
           ],
+        ),
+
+      ),
+      bottomNavigationBar: const BottomAppBar(
+        child: Center(
+          child: Text(
+              ' 2023 \u00a9 Powerd By Guilherme Ramos \n Todos os Direitos Reservados',
+              textAlign: TextAlign.center),
         ),
       ),
     );

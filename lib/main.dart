@@ -3,6 +3,8 @@ import 'package:projeto_final/src/auth/auth_service.dart';
 import 'package:projeto_final/src/auth/login_page.dart';
 import 'package:projeto_final/src/home/home_page.dart';
 import 'package:projeto_final/src/registration/registration_page.dart';
+import 'package:projeto_final/src/transaction/transaction_form.dart';
+import 'package:projeto_final/src/transaction/transaction_view.dart';
 import 'package:provider/provider.dart';
 
 
@@ -48,6 +50,8 @@ class MyApp extends StatelessWidget {
         '/auth/login': (context) => const LoginPage(),
         '/auth/registration': (context) => const RegistrationPage(),
         '/home': (context) => const HomePage(),
+        '/transaction/form':(context) => const TransactionFormPage(),
+        '/transaction/list':(context) => const TransactionView(),
       },
     );
   }

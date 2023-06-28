@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:projeto_final/src/account/account.dart';
 import 'package:projeto_final/src/account/account_service.dart';
 import 'package:projeto_final/src/auth/auth_service.dart';
+import 'package:projeto_final/src/transaction/transaction_view.dart';
 import 'package:provider/provider.dart';
 
 class AccountView extends StatefulWidget {
@@ -20,12 +21,10 @@ class _AccountViewState extends State<AccountView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildAccountView(),
+    return Column(children: [
         _floatButton(),
-      ],
-    );
+        _buildAccountView(),
+      ],);
   }
 
   int present = 0;
@@ -44,7 +43,7 @@ class _AccountViewState extends State<AccountView> {
 
   Future<List<Account>> fetchAccounts() async {
     try {
-      accounts = AccountService().getAccounts(idPessoa);
+      accounts = AccountService().getAccounts();
 
       setState(() {
         accounts = accounts;
@@ -70,7 +69,6 @@ class _AccountViewState extends State<AccountView> {
             actions: [
               TextButton(
                 onPressed: () {
-                  print(textFieldController.text);
                   if (textFieldController.text != '') {
                     AccountService()
                         .createAccount(textFieldController.text, idPessoa).then((value) {
@@ -104,17 +102,18 @@ class _AccountViewState extends State<AccountView> {
     return Builder(builder: (context) {
       FloatingActionButtonLocation.endDocked;
       return Column(
+
         children: [
-          FloatingActionButton(
+          ElevatedButton(
             onPressed: () {
               showcontent();
             },
-            tooltip: 'Novo',
-            shape: const CircleBorder(),
+              style:  ElevatedButton.styleFrom(
             backgroundColor: Colors.blue,
-            child: const Icon(Icons.add,
-                color: Colors.white, size: 30, weight: 950),
+      ),
+            child: const Text('CRIAR NOVA CONTA',style: TextStyle( color: Colors.white),)
           ),
+          const Divider(),
         ],
       );
     });
@@ -147,8 +146,6 @@ class _AccountViewState extends State<AccountView> {
                       .updateAccount(textFieldControllerEdit.text, account.id)
                       .then((value) {
                     if (value) {
-                      Navigator.of(context).pop();
-
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content: Text('Conta Editada com sucesso.')),
@@ -187,8 +184,8 @@ class _AccountViewState extends State<AccountView> {
             ],
           );
         } else if (snapshot.hasData) {
-          final accpunts = snapshot.data!;
-          if (accpunts.isEmpty) {
+          final accounts = snapshot.data!;
+          if (accounts.isEmpty) {
             return const SingleChildScrollView(
                 child: Column(
               children: [
@@ -198,64 +195,82 @@ class _AccountViewState extends State<AccountView> {
           } else {
             return Expanded(
               child: ListView.builder(
-                itemCount: accpunts.length,
+                itemCount: accounts.length,
                 itemBuilder: (context, index) {
-                  final account = accpunts[index];
-                  return ListTile(
-                    title: Text(
-                        'Conta : ${account.conta ?? ''} \nCriação : ${account.data ?? ''}'),
-                    subtitle: Text('Descrição: ${account.descricao}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            showDialogEdit(account);
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('Deletar conta?'),
-                                content: const Text(
-                                    'Tem certeza de que deseja excluir esta Conta, todos os registros serão perdidos?'),
-                                actions: [
-                                  TextButton(
-                                    child: const Text('Cancelar'),
-                                    onPressed: () => Navigator.pop(context),
-                                  ),
-                                  TextButton(
-                                    child: const Text('Deletar'),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      AccountService()
-                                          .deleteAccount(account.conta!)
-                                          .then(
-                                        (value) {
-                                          if (value) {
-                                            _refreshAccounts();
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              const SnackBar(
-                                                  content: Text(
-                                                      'Conta excluida com sucesso.')),
-                                            );
-                                          }
+                  final account = accounts[index];
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(
+                            'Conta : ${account.conta ?? ''} \nCriação : ${account.data ?? ''}'),
+                        subtitle: Text('Descrição: ${account.descricao}'),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.remove_red_eye),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => TransactionView(account: account),
+                                    ));
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
+                                showDialogEdit(account);
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Deletar conta?'),
+                                    content: const Text(
+                                        'Tem certeza de que deseja excluir esta Conta, todos os registros serão perdidos?'),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text('Cancelar'),
+                                        onPressed: () => Navigator.pop(context),
+                                      ),
+                                      TextButton(
+                                        child: const Text('Deletar'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          AccountService()
+                                              .deleteAccount(account.conta!)
+                                              .then(
+                                            (value) {
+                                              if (value) {
+                                                _refreshAccounts();
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                      content: Text(
+                                                          'Conta excluida com sucesso.')),
+                                                );
+                                              }
+                                            },
+                                          );
                                         },
-                                      );
-                                    },
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                      const Divider(
+                        height: 1.0,
+                        color: Colors.grey,
+                      ),
+                    ],
                   );
                 },
               ),

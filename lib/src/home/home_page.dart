@@ -8,7 +8,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      pageTitle: 'Página Inicial',
       child: Container(
         width: 402,
         height: 503,

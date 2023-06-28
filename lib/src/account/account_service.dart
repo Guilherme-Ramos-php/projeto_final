@@ -2,21 +2,22 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:projeto_final/src/account/account.dart';
 import 'package:projeto_final/src/lib/service/abstract_service.dart';
+import 'package:projeto_final/src/transaction/transaction.dart';
 
 class AccountService extends BaseService {
   static const _uri = BaseService.apiBasePath;
 
-  Future<List<Account>> getAccounts(int id) async {
+
+  Future<List<Account>> getAccounts() async {
     final response = await http.get(
       Uri.parse(
-        "$_uri/api/conta/all/$id",
+        "$_uri/api/conta/all",
       ),
       headers: await header(true),
     );
 
     final responseJson = jsonDecode(response.body);
 
-    print(responseJson);
     if (response.statusCode != 200) {
       return [];
     }
@@ -29,7 +30,33 @@ class AccountService extends BaseService {
     return output;
   }
 
-  createAccount(String descricao, int idPessoa) async {
+  Future<List<Transaction>> getTransactions(String conta) async {
+    final response = await http.get(
+      Uri.parse(
+        "$_uri/api/conta/$conta",
+      ),
+      headers: await header(true),
+    );
+
+    final responseJson = jsonDecode(response.body);
+
+     if (response.statusCode != 200) {
+      return [];
+    }
+
+    List<Transaction> output = [];
+    for (var data in responseJson) {
+      for(var transaction in data['movimentacoes']){
+        print(transaction);
+        output.add(Transaction.fromJson(transaction));
+      }
+    }
+
+    print(output);
+    return output;
+  }
+
+  Future createAccount(String descricao, int idPessoa) async {
     try {
       final response = await http.post(
         Uri.parse(
@@ -39,7 +66,7 @@ class AccountService extends BaseService {
         headers: await header(true),
       );
 
-      final responseJson = jsonDecode(response.body);
+
       if (response.statusCode >= 300) {
         throw Exception(
             'Algo incesperado aconteceu! : ${response.reasonPhrase} \n ');
